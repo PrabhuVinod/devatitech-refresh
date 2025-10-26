@@ -46,3 +46,28 @@ jobs:
           publish_dir: ./dist
           publish_branch: gh-pages
           keep_files: false
+
+      - name: Post-deploy health check
+        run: |
+          # Construct the GitHub Pages URL for the repo (project site)
+          OWNER=${{ github.repository_owner }}
+          REPO=${{ github.event.repository.name }}
+          SITE_URL="https://${OWNER}.github.io/${REPO}/"
+          echo "Deployed site URL: ${SITE_URL}"
+
+          echo "Waiting for site to become available..."
+          max_attempts=12
+          attempt=1
+          until [ $attempt -gt $max_attempts ]; do
+            status=$(curl -s -o /dev/null -w "%{http_code}" "${SITE_URL}" || true)
+            echo "Attempt ${attempt}: HTTP ${status}"
+            if [ "${status}" = "200" ]; then
+              echo "Site is up: ${SITE_URL}"
+              exit 0
+            fi
+            attempt=$((attempt+1))
+            sleep 5
+          done
+
+          echo "Health check failed after ${max_attempts} attempts. You can still check the site manually: ${SITE_URL}"
+          exit 1
