@@ -1,8 +1,16 @@
 name: CI / Build & Deploy
 
+# Allow manual runs and push triggers
 on:
   push:
     branches: [ main ]
+  workflow_dispatch: {}
+
+# Grant the workflow token the rights needed to push built assets
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build-deploy:
@@ -14,6 +22,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # ensure we can push tags/branches from the runner using the provided token
+          persist-credentials: true
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
