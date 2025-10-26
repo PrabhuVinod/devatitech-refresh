@@ -1,22 +1,6 @@
-import React, { useRef, useState, useEffect } from "react";
-
 const Hero = () => {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const [pulses, setPulses] = useState<Array<{ id: number; x: number; y: number }>>([]);
-
-  const handleClick = (e: React.MouseEvent) => {
-    const rect = sectionRef.current?.getBoundingClientRect();
-    if (!rect) return;
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const id = Date.now() + Math.floor(Math.random() * 1000);
-    setPulses((p) => [...p, { id, x, y }]);
-    // remove after animation
-    window.setTimeout(() => setPulses((p) => p.filter((item) => item.id !== id)), 800);
-  };
-
   return (
-    <section ref={sectionRef} onClick={handleClick} className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated Gradient Background */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(180_85%_45%/0.2),transparent_50%)]" />
@@ -79,36 +63,17 @@ const Hero = () => {
             50% { opacity: 1; }
             100% { stroke-dashoffset: -1500; opacity: 0.6; }
           }
-
-          /* Click pulse styles */
-          .pulse {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 9999px;
-            background: radial-gradient(circle at 30% 30%, rgba(99,102,241,0.95) 0%, rgba(168,85,247,0.7) 45%, rgba(99,102,241,0.15) 60%, transparent 70%);
-            transform: translate(-50%, -50%) scale(0.6);
-            will-change: transform, opacity;
-            mix-blend-mode: screen;
-            pointer-events: none;
-            filter: blur(0.6px) drop-shadow(0 6px 20px rgba(99,102,241,0.12));
-            animation: pulse 800ms cubic-bezier(.22,.9,.3,1) forwards;
+          @keyframes flow2 {
+            0% { stroke-dashoffset: 0; opacity: 0.5; }
+            50% { opacity: 0.9; }
+            100% { stroke-dashoffset: -1800; opacity: 0.5; }
           }
-
-          @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(0.6); opacity: 1; }
-            60% { transform: translate(-50%, -50%) scale(4.5); opacity: 0.6; }
-            100% { transform: translate(-50%, -50%) scale(8); opacity: 0; }
+          @keyframes flow3 {
+            0% { stroke-dashoffset: 0; opacity: 0.4; }
+            50% { opacity: 0.8; }
+            100% { stroke-dashoffset: -2200; opacity: 0.4; }
           }
-
         `}</style>
-      </div>
-
-      {/* Click pulses layer - sits between grid (z-0) and content (z-10) */}
-      <div className="absolute inset-0" style={{ zIndex: 5, pointerEvents: 'none' }}>
-        {pulses.map((p) => (
-          <span key={p.id} className="pulse" style={{ left: p.x, top: p.y }} />
-        ))}
       </div>
       
       {/* Content */}
