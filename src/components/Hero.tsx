@@ -1,6 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -25,15 +22,7 @@ const Hero = () => {
             <span className="text-primary font-medium">cutting-edge software</span> that empowers businesses to thrive in the digital age
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground text-lg px-8 py-6 rounded-full shadow-lg hover:shadow-glow transition-all duration-300 group">
-              Get Started
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button size="lg" variant="outline" className="border-2 border-primary/30 hover:border-primary hover:bg-primary/10 text-foreground text-lg px-8 py-6 rounded-full backdrop-blur-sm">
-              Learn More
-            </Button>
-          </div>
+          
         </div>
       </div>
       

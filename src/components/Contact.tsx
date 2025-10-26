@@ -35,24 +35,7 @@ const Contact = () => {
             </a>
           </div>
           
-          <div className="animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            <h3 className="text-2xl font-semibold mb-6">Follow Us</h3>
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-6 rounded-full shadow-lg hover:shadow-glow transition-all duration-300 group"
-              asChild
-            >
-              <a 
-                href="https://www.linkedin.com/company/86044399" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2"
-              >
-                <Linkedin className="h-5 w-5" />
-                Connect on LinkedIn
-              </a>
-            </Button>
-          </div>
+          
         </div>
       </div>
     </section>
