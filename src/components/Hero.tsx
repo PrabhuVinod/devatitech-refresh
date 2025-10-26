@@ -1,10 +1,115 @@
+import React, { useRef, useState, useEffect } from "react";
+
 const Hero = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [pulses, setPulses] = useState<Array<{ id: number; x: number; y: number }>>([]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    const rect = sectionRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const id = Date.now() + Math.floor(Math.random() * 1000);
+    setPulses((p) => [...p, { id, x, y }]);
+    // remove after animation
+    window.setTimeout(() => setPulses((p) => p.filter((item) => item.id !== id)), 800);
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section ref={sectionRef} onClick={handleClick} className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Animated Gradient Background */}
       <div className="absolute inset-0 bg-gradient-hero opacity-90" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(180_85%_45%/0.2),transparent_50%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(270_60%_50%/0.2),transparent_50%)]" />
+      {/* Grid overlay with animated currents - sits above gradients but behind content */}
+      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="gridPattern" width="80" height="80" patternUnits="userSpaceOnUse">
+              <path d="M80 0 H0 V80" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+            </pattern>
+            <linearGradient id="currentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="rgba(56,189,248,0.9)" />
+              <stop offset="50%" stopColor="rgba(168,85,247,0.9)" />
+              <stop offset="100%" stopColor="rgba(99,102,241,0.9)" />
+            </linearGradient>
+          </defs>
+
+          {/* tiled grid */}
+          <rect width="100%" height="100%" fill="url(#gridPattern)" />
+
+          {/* soft vignette to blend with background */}
+          <rect width="100%" height="100%" fill="black" opacity="0.02" />
+
+          {/* animated current paths */}
+          <g className="grid-currents" stroke="url(#currentGradient)" strokeWidth="2" fill="none" strokeLinecap="round">
+            <path d="M-300 200 C 100 150, 300 250, 700 200 S 1200 150, 1600 200" className="flow flow-1" />
+            <path d="M-200 360 C 100 310, 400 420, 900 360 S 1500 300, 1700 360" className="flow flow-2" />
+            <path d="M-400 520 C 150 470, 500 580, 1100 520 S 1600 460, 2000 520" className="flow flow-3" />
+          </g>
+        </svg>
+
+        {/* Inline styles for animations (kept local to component) */}
+        <style>{`
+          .grid-currents .flow {
+            stroke-dasharray: 300 1200;
+            stroke-dashoffset: 0;
+            opacity: 0.85;
+            mix-blend-mode: screen;
+            filter: drop-shadow(0 4px 18px rgba(99,102,241,0.22));
+            transform-origin: center;
+            will-change: stroke-dashoffset, opacity;
+          }
+
+          .grid-currents .flow-1 {
+            animation: flow1 6s linear infinite;
+            opacity: 0.95;
+          }
+          .grid-currents .flow-2 {
+            animation: flow2 8s linear infinite;
+            opacity: 0.75;
+          }
+          .grid-currents .flow-3 {
+            animation: flow3 10s linear infinite;
+            opacity: 0.65;
+          }
+
+          @keyframes flow1 {
+            0% { stroke-dashoffset: 0; opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { stroke-dashoffset: -1500; opacity: 0.6; }
+          }
+
+          /* Click pulse styles */
+          .pulse {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 30% 30%, rgba(99,102,241,0.95) 0%, rgba(168,85,247,0.7) 45%, rgba(99,102,241,0.15) 60%, transparent 70%);
+            transform: translate(-50%, -50%) scale(0.6);
+            will-change: transform, opacity;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            filter: blur(0.6px) drop-shadow(0 6px 20px rgba(99,102,241,0.12));
+            animation: pulse 800ms cubic-bezier(.22,.9,.3,1) forwards;
+          }
+
+          @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.6); opacity: 1; }
+            60% { transform: translate(-50%, -50%) scale(4.5); opacity: 0.6; }
+            100% { transform: translate(-50%, -50%) scale(8); opacity: 0; }
+          }
+
+        `}</style>
+      </div>
+
+      {/* Click pulses layer - sits between grid (z-0) and content (z-10) */}
+      <div className="absolute inset-0" style={{ zIndex: 5, pointerEvents: 'none' }}>
+        {pulses.map((p) => (
+          <span key={p.id} className="pulse" style={{ left: p.x, top: p.y }} />
+        ))}
+      </div>
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6 py-20 text-center">
