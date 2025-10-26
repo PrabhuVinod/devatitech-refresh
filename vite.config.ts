@@ -5,10 +5,10 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // Compute production base. Use explicit repo subpath to guarantee correct
-  // asset URLs on GitHub Pages. If you prefer dynamic behavior, set VITE_BASE in CI.
-  const repoName = "devatitech-refresh";
-  const base = mode === "development" ? "/" : process.env.VITE_BASE ?? `/${repoName}/`;
+  // Compute production base. Default to a relative base so built `dist/` is
+  // portable and doesn't contain a hardcoded repo path. CI or callers may set
+  // VITE_BASE to an explicit subpath when needed (e.g. GitHub Pages project sites).
+  const base = mode === "development" ? "/" : process.env.VITE_BASE ?? "./";
 
   return {
     base,
