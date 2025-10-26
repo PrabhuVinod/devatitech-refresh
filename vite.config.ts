@@ -5,9 +5,9 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  // Compute a sensible base for production builds.
-  // Priority: VITE_BASE env var (set by CI) -> repo name from GITHUB_REPOSITORY -> default literal
-  const repoName = process.env.GITHUB_REPOSITORY?.split("/")?.[1] ?? "devatitech-refresh";
+  // Compute production base. Use explicit repo subpath to guarantee correct
+  // asset URLs on GitHub Pages. If you prefer dynamic behavior, set VITE_BASE in CI.
+  const repoName = "devatitech-refresh";
   const base = mode === "development" ? "/" : process.env.VITE_BASE ?? `/${repoName}/`;
 
   return {
