@@ -1,12 +1,8 @@
 # DeVaTi Technologies — Website
 
-[![Deploy](https://github.com/PrabhuVinod/devatitech-refresh/actions/workflows/deploy.yml/badge.svg)](https://github.com/PrabhuVinod/devatitech-refresh/actions/workflows/deploy.yml)
-
 ## Project info
 
-**Lovable URL**: https://lovable.dev/projects/c645a54d-bf2f-47fc-9d2d-934b99be98c4
-
-This repository is a Vite + React + TypeScript site using Tailwind CSS and shadcn-ui components. It is configured to produce a static build suitable for GitHub Pages and includes a GitHub Actions workflow to automatically deploy the `dist` folder to the `gh-pages` branch.
+This repository is a Vite + React + TypeScript site using Tailwind CSS and shadcn-ui components. The project produces a static build in `dist/` suitable for any static host. Builds are portable by default (relative asset paths), so you can copy `dist/` into another repository or static host without embedding repository-specific paths.
 
 ## Project structure (important files)
 
@@ -17,19 +13,22 @@ This repository is a Vite + React + TypeScript site using Tailwind CSS and shadc
 	- `components/` — React components used across the site (Hero, Footer, UI primitives)
 	- `pages/` — route pages (Index, NotFound)
 - `public/` — static assets copied to the build output
-- `vite.config.ts` — Vite configuration (note: `base` is set for GitHub Pages)
+- `vite.config.ts` — Vite configuration (note: production builds default to a relative base; use `VITE_BASE` to override at build time)
 - `package.json` — npm scripts and deps
-- `.github/workflows/deploy.yml` — GitHub Actions workflow to build and deploy
+
 
 ## Scripts
 
 - `npm run dev` — start development server (hot reload)
 - `npm run build:relative` — create a production build in `dist/`
 - `npm run preview:dist` — locally preview the built `dist` folder
-- `npm run deploy` — (local) build + publish `dist/` to `gh-pages` branch using the `gh-pages` package
 
 Notes:
-- The project uses Vite's `base` option (set in `vite.config.ts`) so assets are emitted with the correct path for GitHub Pages. The value is `/devatitech-refresh/` for production builds.
+- Production builds default to relative asset paths so `dist/` is portable. If you need an explicit base path (e.g. serving under a subpath), set the environment variable `VITE_BASE` when building, for example:
+
+```powershell
+set "VITE_BASE=/my-subpath/"; npm run build
+```
 
 ## Local setup
 
@@ -43,7 +42,7 @@ Steps:
 
 ```powershell
 git clone <YOUR_REPO_URL>
-cd devatitech-refresh
+cd <YOUR_REPO_DIRECTORY>
 ```
 
 2. Install dependencies
@@ -70,27 +69,30 @@ npm run build
 npm run preview
 ```
 
-## Deploying to GitHub Pages
+## Deploying / copying `dist/`
 
-Two options:
+Because the production build produces relative asset paths by default, `dist/` is portable and can be used in another repository or static host. Common options:
 
-1) Use the included `deploy` script (manual deploy from your machine):
+1) Copy `dist/` into another repository and serve from the root (or your chosen location):
 
 ```powershell
-# install gh-pages once
-npm i -D gh-pages
+# build
+npm run build:relative
 
-# build and publish
-npm run deploy
+# example (Windows): copy the dist folder into another repo
+robocopy .\dist ..\other-repo\dist /E
 ```
 
-This uses the `gh-pages` package to push the `dist/` folder to the `gh-pages` branch.
+2) Serve `dist/` locally for verification:
 
-2) Automatic deploy via GitHub Actions (recommended):
+```powershell
+npm run preview:dist
+# or: npx http-server ./dist -p 4173 -c-1
+```
 
-- A workflow is provided at `.github/workflows/deploy.yml`. It runs on every push to `main`: installs dependencies, runs `npm run build`, and publishes the `dist` folder to `gh-pages` using `peaceiris/actions-gh-pages`.
-
-Make sure GitHub Pages is configured on the repository to serve from the `gh-pages` branch (or repository settings default). For a user/organization page, the base path may differ — adjust `vite.config.ts` accordingly.
+Notes:
+- If you prefer absolute paths (serving under a subpath), set `VITE_BASE` at build time.
+- The repository no longer contains an automated deploy workflow by default; manage CI or deployment in the target repo or manually.
 
 ## Notes & troubleshooting
 

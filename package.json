@@ -10,9 +10,7 @@
     "build:relative": "vite build --base ./",
     "lint": "eslint .",
     "preview": "vite preview",
-    "preview:dist": "npx http-server ./dist -p 4173 -c-1",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "preview:dist": "npx http-server ./dist -p 4173 -c-1"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -76,7 +74,6 @@
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
-    "gh-pages": "^5.0.0",
     "globals": "^15.15.0",
     "lovable-tagger": "^1.1.11",
     "postcss": "^8.5.6",
